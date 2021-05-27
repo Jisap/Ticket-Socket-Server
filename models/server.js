@@ -4,6 +4,7 @@ const http = require('http');           //Requerimos los modulos http
 const socketio = require('socket.io');  //requerimos los modulos de socket.io
 const path = require('path');
 const Sockets = require('./sockets');
+const cors = require('cors');           //npm i cors
 
 class Server{
     
@@ -15,12 +16,18 @@ class Server{
         this.server = http.createServer( this.app );    // Asignamos al servidor express el protocolo http y lo llamamos server
 
         //Configuración de socket server
-        this.io = socketio( this.server,{/* conficuraciones */} ); // Asignamos al server los paquetes de socket.io y lo llamamos io
+        this.io = socketio( this.server,{ cors: {                   // Asignamos al server los paquetes de socket.io y lo llamamos io
+                                            origin: "*",            // Añadimos también la configuración del cors    
+                                            method: ["GET","POST"]
+        }} ); 
     }
 
     middlewares(){
         //Desplegar el directorio público
         this.app.use( express.static(path.resolve( __dirname, '../public' )));
+
+        //CORS
+        this.app.use( cors() );
     }
 
     configurarSockets(){
