@@ -49,7 +49,8 @@
         const mensajes = document.querySelector('#misMensajes');
         const txtMensaje = document.querySelector('#txtMensaje');
 
-        const socket = io('http://localhost:8080');       // Socket del cliente
+        //const socket = io('http://localhost:8080');       // Socket del cliente
+        const socket = io('https://react-socket-srv.herokuapp.com/');
         
         socket.on('mensaje-bienvenida', ( data ) => {     // estará a la escucha del evento'mensaje-bienvenida' 
             console.log(data)                             // Cuando lo reciba mensaje en consola mostrando la data 
