@@ -1,3 +1,4 @@
+const TicketList = require("./ticket-list");
 
 
 class Sockets{
@@ -5,6 +6,7 @@ class Sockets{
     constructor( io ){
 
         this.io = io;
+        this.ticketList = new TicketList();
         this.socketEvents();
         
     }
@@ -14,22 +16,21 @@ class Sockets{
     //On connection          
     this.io.on('connection', ( socket ) => {                            // Cuando un cliente se conecta se crea un socket y este lleva asociado un id
         
-        //Mensaje de bienvenida
-        socket.emit('mensaje-bienvenida', {                             // Al conectarse le enviaremos/emitiremos un evento 'mensaje-bienvenida'
-            msg: 'Bienvenido al server',                                // con su data {msg:'Bienvenido al server', fecha: new Date()}
-            fecha: new Date()
+        console.log('Cliente conectado');
+                            
+        socket.on('solicitar-ticket', (data, callback) => {             //data que recibimos//CB que mandamos ejecutar en el frontend
+            const nuevoTicket = this.ticketList.crearTicket();
+            callback( nuevoTicket )
         });
 
-        //Escuchar evento: mensaje-to-server
-        socket.on('mensaje-to-server', ( data ) => {
-        console.log( data );
-        this.io.emit('mensaje-from-server', data );                     // Para emitir un evento al todos los posibles clientes/sockets usamos io
-    })
+        socket.on( 'siguiente-ticket-trabajar', (usuario, callback) => {
+            const { agente, escritorio } = usuario;
+            const suTicket = this.ticketList.asignarTicket( agente, escritorio );
+            callback( suTicket )
 
-});    
-
-
-
+            this.io.emit('ticket-asignado', this.ticketList.ultimos13);
+        })
+    })      
     }
 }
 

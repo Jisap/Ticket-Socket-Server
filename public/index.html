@@ -12,31 +12,10 @@
 </head>
 <body class="container">
 
-    <h1 class="mt-5">MiniChat</h1>
+    <h1 class="mt-5">Acceso denegado</h1>
     <hr>
 
-    <form id="miFormulario">
-        <div class="row">
-            <div class="col-8">
-                <input type="text" id="txtMensaje" placeholder="mensaje" class="form-control">
-            </div>
-            <div class="col-4">
-                <button class="btn btn-primary" type="submit">Enviar</button>
-            </div>
-        </div>
-    </form>
-
-    <div class="row">
-        <div class="col">
-            <ul id="misMensajes" class="mt-2">
-                
-            </ul>
-        </div>
-    </div>
-
-
-
-
+    
 
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"
@@ -45,28 +24,14 @@
 
     <script>
 
-        const formulario = document.querySelector('#miFormulario');
-        const mensajes = document.querySelector('#misMensajes');
-        const txtMensaje = document.querySelector('#txtMensaje');
-
-        //const socket = io('http://localhost:8080');       // Socket del cliente
-        const socket = io('https://react-socket-srv.herokuapp.com/');
+        const socket = io('http://localhost:8080');                         // Socket del cliente desarrollo
+        //const socket = io('https://react-socket-srv.herokuapp.com/');     // Socket del cliente producción
         
-        socket.on('mensaje-bienvenida', ( data ) => {     // estará a la escucha del evento'mensaje-bienvenida' 
-            console.log(data)                             // Cuando lo reciba mensaje en consola mostrando la data 
-        });
+        socket.on('current-bands', ( bands ) => {                // estará a la escucha del evento'current-bands' 
+                console.log( bands )                             // Cuando lo reciba mensaje en consola mostrando la data 
+            });
 
-        formulario.addEventListener('submit', (ev) => {
-            ev.preventDefault();
-            const nuevoMensaje = txtMensaje.value;
-            socket.emit('mensaje-to-server',{
-                texto: nuevoMensaje
-            })
-        })
-
-        socket.on('mensaje-from-server', (data) => {
-            mensajes.innerHTML += `<li>${ data.texto }</li>`;
-        });
+       
 
     </script>
 </body>

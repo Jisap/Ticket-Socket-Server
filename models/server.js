@@ -20,6 +20,9 @@ class Server{
                                             origin: "*",            // Añadimos también la configuración del cors    
                                             method: ["GET","POST"]
         }} ); 
+        //Inicializar sockets
+        this.sockets = new Sockets( this.io );          // Instanciamos la clase sockets en una variable llamada igual 
+                                                        // Sockets contiene ticket-list y este todos los métodos de manejo de tickets
     }
 
     middlewares(){
@@ -28,11 +31,19 @@ class Server{
 
         //CORS
         this.app.use( cors() );
+
+        //GET de los últimos tickets
+        this.app.get('/ultimos', (req, res) => {                        // Cuando se haga una petición a /ultimos
+            res.json({                                                  // el server dará como respuesta los últimos 13 tickets del arreglo
+                ok:true,                                                // De esta manera cuando se habrá una nueva pantalla de colas
+                ultimos: this.sockets.ticketList.ultimos13              // recargará automaticamente los últimos 13 tickets
+            });
+        });
     }
 
-    configurarSockets(){
-        new Sockets(this.io);
-    }
+    // configurarSockets(){
+    //     new Sockets(this.io);
+    // }
 
     execute(){
 
@@ -40,7 +51,7 @@ class Server{
         this.middlewares();
 
         //Inicializar sockets
-        this.configurarSockets();
+        //this.configurarSockets();
 
         //Inicializar server
         this.server.listen(this.port, () => {
